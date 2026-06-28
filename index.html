@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <meta name="theme-color" content="#080b14"/>
+  <meta name="description" content="Your personal Solo Leveling-style life RPG — track habits, level up stats, conquer dungeon quests, and unlock your full potential."/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="Life Tracker"/>
+  <title>Life Tracker — Level Up Your Life</title>
+  <link rel="manifest" href="manifest.json"/>
+  <link rel="apple-touch-icon" href="icons/icon-192.png"/>
+  <link rel="icon" type="image/png" href="icons/icon-192.png"/>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+
+<!-- ── HEADER ─────────────────────────────────────────── -->
+<header id="app-header">
+  <div class="header-brand">
+    <span class="brand-icon">⚔️</span>
+    <span class="brand-name">LIFE TRACKER</span>
+  </div>
+  <div class="header-player">
+    <span class="player-rank-badge" style="color:var(--rank-e);border-color:var(--rank-e)">E</span>
+    <span class="player-name-small">Hunter</span>
+  </div>
+</header>
+
+<!-- ── MAIN CONTENT ───────────────────────────────────── -->
+<main id="main-content">
+
+  <!-- ══ DASHBOARD ═════════════════════════════════════ -->
+  <section id="view-dashboard" class="view">
+
+    <!-- Player Card -->
+    <div id="player-card"></div>
+
+    <!-- Dungeon Banner (shows when rank locked) -->
+    <div id="dungeon-banner-wrap"></div>
+
+    <!-- Pivot Prompt (smart suggestion) -->
+    <div id="pivot-prompt-wrap"></div>
+
+    <!-- Progress Rings -->
+    <div class="section-header">
+      <div class="section-title"><span class="title-icon">💫</span> Today's Power</div>
+    </div>
+    <div id="rings-grid" class="rings-grid"></div>
+
+    <!-- Mood -->
+    <div class="card">
+      <div class="section-header" style="margin-bottom:0.5rem">
+        <div class="section-title"><span class="title-icon">🌡️</span> How are you feeling?</div>
+      </div>
+      <div id="mood-picker"></div>
+    </div>
+
+    <!-- Today's Habits (quick log) -->
+    <div class="section-header">
+      <div class="section-title"><span class="title-icon">📋</span> Today's Quests</div>
+      <button class="btn btn-primary btn-sm" id="add-habit-btn-dash">+ New</button>
+    </div>
+    <div id="habits-list"></div>
+
+  </section>
+
+  <!-- ══ HABITS ════════════════════════════════════════ -->
+  <section id="view-habits" class="view">
+
+    <div class="section-header">
+      <div class="section-title"><span class="title-icon">⚔️</span> My Habits</div>
+      <button class="btn btn-primary btn-sm" id="add-habit-btn">+ New</button>
+    </div>
+
+    <!-- Manage toggle -->
+    <div class="manage-toggle-bar" id="manage-habits-toggle">
+      <span class="text-sm fw-700">⚙️ Manage Habits</span>
+      <span class="manage-badge">Manage</span>
+    </div>
+
+    <!-- Habit list -->
+    <div id="habits-list"></div>
+
+    <!-- Heatmap -->
+    <div class="card" style="margin-top:1rem;">
+      <div class="collapsible-header" data-collapse="heatmap-section">
+        <div class="section-title" style="margin-bottom:0"><span class="title-icon">📊</span> Consistency (70 days)</div>
+        <span class="chevron">▾</span>
+      </div>
+      <div class="collapsible-body" id="heatmap-section">
+        <div id="heatmap-grid" class="heatmap-grid" style="margin-top:0.5rem;"></div>
+        <div style="display:flex;gap:0.4rem;justify-content:flex-end;margin-top:0.5rem;align-items:center;">
+          <span class="text-xs text-muted">Less</span>
+          <div style="width:10px;height:10px;background:rgba(255,255,255,0.04);border-radius:2px;"></div>
+          <div style="width:10px;height:10px;background:rgba(124,58,237,0.25);border-radius:2px;"></div>
+          <div style="width:10px;height:10px;background:rgba(124,58,237,0.5);border-radius:2px;"></div>
+          <div style="width:10px;height:10px;background:rgba(124,58,237,0.75);border-radius:2px;"></div>
+          <div style="width:10px;height:10px;background:#9f67ff;border-radius:2px;box-shadow:0 0 6px rgba(159,103,255,0.5);"></div>
+          <span class="text-xs text-muted">More</span>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ══ GOALS ═════════════════════════════════════════ -->
+  <section id="view-goals" class="view">
+
+    <div class="section-header">
+      <div class="section-title"><span class="title-icon">🎯</span> My Goals</div>
+      <button class="btn btn-primary btn-sm" id="add-goal-btn">+ New</button>
+    </div>
+
+    <!-- Tabs -->
+    <div style="display:flex;gap:0.4rem;margin-bottom:0.75rem;">
+      <button class="btn btn-ghost btn-sm active" id="goals-tab-active" style="flex:1">Active</button>
+      <button class="btn btn-ghost btn-sm" id="goals-tab-done" style="flex:1">Completed</button>
+    </div>
+
+    <div id="goals-list"></div>
+
+  </section>
+
+  <!-- ══ ANALYTICS ══════════════════════════════════════ -->
+  <section id="view-analytics" class="view">
+
+    <div class="section-title" style="margin-bottom:0.75rem"><span class="title-icon">📈</span> Analytics</div>
+
+    <!-- 14-Day Completion Chart -->
+    <div class="card">
+      <div class="section-title" style="font-size:0.85rem;margin-bottom:0.6rem;">14-Day Habit Completion</div>
+      <div class="chart-wrap" id="bar-chart"></div>
+    </div>
+
+    <!-- Stat Radar -->
+    <div class="card" style="text-align:center;">
+      <div class="section-title" style="font-size:0.85rem;margin-bottom:0.6rem;justify-content:center;">⭐ Character Stats</div>
+      <div class="radar-wrap" id="radar-chart"></div>
+    </div>
+
+    <!-- Badges -->
+    <div class="section-title" style="margin-bottom:0.6rem;margin-top:0.5rem;"><span class="title-icon">🏅</span> Badges</div>
+    <div id="badges-grid" class="badges-grid"></div>
+
+  </section>
+
+  <!-- ══ SETTINGS ══════════════════════════════════════ -->
+  <section id="view-settings" class="view">
+    <div class="section-title" style="margin-bottom:0.75rem"><span class="title-icon">⚙️</span> Settings</div>
+
+    <div class="card">
+      <div class="settings-row">
+        <div>
+          <div class="settings-label">Hunter Name</div>
+          <div class="settings-desc">Your character's name</div>
+        </div>
+        <input id="settings-player-name" type="text" placeholder="Hunter" style="width:130px;text-align:right;"/>
+      </div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-label">Export Data</div>
+          <div class="settings-desc">Download all your tracking data as JSON</div>
+        </div>
+        <button class="btn btn-ghost btn-sm" id="export-btn">📦 Export</button>
+      </div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-label">Import Data</div>
+          <div class="settings-desc">Restore from a backup file</div>
+        </div>
+        <button class="btn btn-ghost btn-sm" id="import-btn">📂 Import</button>
+      </div>
+      <input type="file" id="import-file-input" accept=".json" class="hidden"/>
+    </div>
+
+    <div class="card" style="margin-top:0.5rem;">
+      <div class="settings-label" style="margin-bottom:0.5rem;">About</div>
+      <p class="text-xs text-muted">Life Tracker v1.0 — Your Solo Leveling-style personal RPG.<br/>All data is stored locally on your device.</p>
+    </div>
+
+  </section>
+</main>
+
+<!-- ── BOTTOM NAV ──────────────────────────────────────── -->
+<nav id="bottom-nav">
+  <button class="nav-btn" data-view="dashboard" id="nav-dashboard">
+    <span class="nav-icon">🏠</span>
+    <span>Home</span>
+  </button>
+  <button class="nav-btn" data-view="habits" id="nav-habits">
+    <span class="nav-icon">⚔️</span>
+    <span>Habits</span>
+  </button>
+  <button class="nav-btn" data-view="goals" id="nav-goals">
+    <span class="nav-icon">🎯</span>
+    <span>Goals</span>
+  </button>
+  <button class="nav-btn" data-view="analytics" id="nav-analytics">
+    <span class="nav-icon">📊</span>
+    <span>Stats</span>
+  </button>
+  <button class="nav-btn" data-view="settings" id="nav-settings">
+    <span class="nav-icon">⚙️</span>
+    <span>Settings</span>
+  </button>
+</nav>
+
+<!-- ── TOAST CONTAINER ────────────────────────────────── -->
+<div id="toast-container"></div>
+
+<!-- ── CONFETTI CANVAS ────────────────────────────────── -->
+<canvas id="confetti-canvas"></canvas>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- MODALS                                                  -->
+<!-- ══════════════════════════════════════════════════════ -->
+
+<!-- Add / Edit Habit Modal -->
+<div class="modal-overlay" id="habit-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="habit-modal-title">⚔️ New Habit</div>
+
+    <div class="form-group">
+      <label class="form-label">Habit Name</label>
+      <input id="habit-name-input" type="text" placeholder="e.g. Morning Workout"/>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Icon (emoji)</label>
+      <input id="habit-icon-input" type="text" placeholder="💪" style="width:80px;text-align:center;font-size:1.3rem;"/>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Tracking Type</label>
+      <div class="type-selector">
+        <div class="type-opt selected" data-type="boolean"><span>✅</span>Yes/No</div>
+        <div class="type-opt" data-type="counter"><span>🔢</span>Counter</div>
+        <div class="type-opt" data-type="timer"><span>⏱️</span>Timer</div>
+        <div class="type-opt" data-type="cook_log"><span>🍳</span>Cook Log</div>
+        <div class="type-opt" data-type="learn_log"><span>🧠</span>Learn Log</div>
+        <div class="type-opt" data-type="finance"><span>💰</span>Finance</div>
+      </div>
+      <div id="type-hint" class="text-xs text-muted" style="margin-top:0.4rem;padding:0.4rem;border-radius:6px;background:var(--bg-input);">
+        Simple Yes/No completion — with optional "Why not?" prompt if skipped.
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Category</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem;">
+        <div class="type-opt cat-opt selected" data-cat="HEALTH"><span>💪</span>Health</div>
+        <div class="type-opt cat-opt" data-cat="CAREER"><span>⚡</span>Productivity</div>
+        <div class="type-opt cat-opt" data-cat="FINANCE"><span>💰</span>Finance</div>
+        <div class="type-opt cat-opt" data-cat="LEARNING"><span>🧠</span>Learning</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;">
+      <div class="form-group">
+        <label class="form-label">Target</label>
+        <input id="habit-target-input" type="number" value="1" min="1"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Unit</label>
+        <input id="habit-unit-input" type="text" placeholder="mins"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">XP Reward</label>
+        <input id="habit-xp-input" type="number" value="20" min="5" max="200"/>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="finance-check-item" style="border:none;padding:0;background:none;">
+        <input type="checkbox" id="habit-why-prompt" style="width:auto;"/>
+        <span class="text-sm">Ask "Why not?" when I skip this habit</span>
+      </label>
+    </div>
+
+    <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
+      <button class="btn btn-primary btn-full" id="habit-submit-btn">Add Habit</button>
+      <button class="btn btn-ghost" data-close-modal>Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Goal Modal -->
+<div class="modal-overlay" id="goal-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🎯 New Goal</div>
+
+    <div class="form-group">
+      <label class="form-label">Goal Name</label>
+      <input id="goal-name-input" type="text" placeholder="e.g. Master AI Skills"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Description</label>
+      <textarea id="goal-desc-input" placeholder="What does success look like?" style="min-height:60px;resize:none;"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Target Date</label>
+      <input id="goal-date-input" type="date"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Category</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem;">
+        <div class="type-opt cat-opt-goal selected" data-cat="HEALTH"><span>💪</span>Health</div>
+        <div class="type-opt cat-opt-goal" data-cat="CAREER"><span>⚡</span>Productivity</div>
+        <div class="type-opt cat-opt-goal" data-cat="FINANCE"><span>💰</span>Finance</div>
+        <div class="type-opt cat-opt-goal" data-cat="LEARNING"><span>🧠</span>Learning</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Milestones (one per line)</label>
+      <textarea id="goal-milestones-input" placeholder="Complete intro course&#10;Build first project&#10;Apply at work" style="min-height:80px;resize:none;"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Link to Habits (for smart pivot checks)</label>
+      <div id="goal-link-habits" style="display:flex;flex-direction:column;gap:0.3rem;max-height:150px;overflow-y:auto;"></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">XP Reward on Completion</label>
+      <input id="goal-xp-input" type="number" value="100" min="10" max="1000"/>
+    </div>
+    <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
+      <button class="btn btn-primary btn-full" id="goal-submit-btn">Create Goal</button>
+      <button class="btn btn-ghost" data-close-modal>Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Skip / Why Not Modal -->
+<div class="modal-overlay" id="skip-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">💬 Skipping: <span id="skip-habit-name"></span></div>
+    <p class="text-sm text-muted" style="margin-bottom:0.75rem;">No judgment — just help future-you understand. Why are you skipping today?</p>
+    <div class="form-group">
+      <textarea id="skip-reason-input" placeholder="e.g. Feeling sick, too tired, travel day…" style="min-height:80px;resize:none;"></textarea>
+    </div>
+    <div style="display:flex;gap:0.5rem;">
+      <button class="btn btn-danger btn-full" id="skip-submit-btn">Skip & Log Reason</button>
+      <button class="btn btn-ghost" data-close-modal>Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Pivot Goal Modal -->
+<div class="modal-overlay" id="pivot-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🔄 Pivot: <span id="pivot-goal-name" style="font-size:0.85rem;"></span></div>
+    <p class="text-xs text-muted" style="margin-bottom:0.75rem;">Pivoting isn't quitting — it's strategic adaptation. Your pivot history is logged for reflection.</p>
+
+    <div class="form-group">
+      <label class="form-label" style="color:#fbbf24;">Why are you pivoting? (required)</label>
+      <textarea id="pivot-reason" placeholder="e.g. My priorities changed, deadline was unrealistic, discovered a better path…" style="min-height:70px;resize:none;border-color:rgba(251,191,36,0.3);"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">New Goal Name (optional)</label>
+      <input id="pivot-new-name" type="text"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">New Target Date (optional)</label>
+      <input id="pivot-new-date" type="date"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Updated Description (optional)</label>
+      <textarea id="pivot-new-desc" style="min-height:60px;resize:none;"></textarea>
+    </div>
+    <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
+      <button class="btn btn-primary btn-full" id="pivot-submit-btn" style="background:linear-gradient(135deg,#b45309,#92400e);">🔄 Confirm Pivot</button>
+      <button class="btn btn-ghost" data-close-modal>Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Dungeon Quest Modal -->
+<div class="modal-overlay" id="dungeon-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" style="color:#c084fc;">⚔️ RANK-UP DUNGEON</div>
+    <div style="text-align:center;padding:1rem 0;">
+      <div style="font-size:3.5rem;margin-bottom:0.5rem;">🏰</div>
+      <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.6;">
+        You've mastered your current rank through consistent effort.<br/>
+        To break through, you must clear the <strong style="color:#c084fc">Rank-Up Dungeon</strong>:
+      </p>
+      <div class="card card-glow" style="margin:1rem 0;text-align:left;">
+        <div style="font-size:0.85rem;font-weight:700;color:#fbbf24;margin-bottom:0.5rem;">⚔️ Boss Quest: 30-Day Consistency Run</div>
+        <ul style="font-size:0.8rem;color:var(--text-secondary);line-height:2;padding-left:1rem;">
+          <li>✓ Complete ALL active habits for 30 consecutive days</li>
+          <li>✓ Log your mood every day</li>
+          <li>✓ No skipping for more than 2 days in a row</li>
+        </ul>
+      </div>
+      <p class="text-xs text-muted">Your progress is tracked automatically. When you clear the quest, you rank up instantly.</p>
+    </div>
+    <div style="display:flex;gap:0.5rem;">
+      <button class="btn btn-full" id="dungeon-start-btn" style="background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;font-size:0.95rem;font-weight:800;padding:0.8rem;">⚔️ ENTER THE DUNGEON</button>
+      <button class="btn btn-ghost" data-close-modal>Later</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── SCRIPTS ─────────────────────────────────────────── -->
+<script type="module" src="js/app.js"></script>
+
+<!-- Heatmap collapsible init -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('[data-collapse]').forEach(h => {
+      h.addEventListener('click', () => {
+        h.classList.toggle('open');
+        document.getElementById(h.dataset.collapse)?.classList.toggle('open');
+      });
+    });
+
+    // Service Worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    }
+  });
+</script>
+
+</body>
+</html>
